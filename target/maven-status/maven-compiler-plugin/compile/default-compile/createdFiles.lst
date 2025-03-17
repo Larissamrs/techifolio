@@ -1,3 +1,11 @@
+com\ifpe\techifolio\TechifolioApplication.class
+com\ifpe\techifolio\entities\Professor.class
+com\ifpe\techifolio\repository\ProfessorRepository.class
+com\ifpe\techifolio\service\CustomOAuth2UserService.class
+com\ifpe\techifolio\controller\ProtectedController.class
+com\ifpe\techifolio\service\PasswordGenerator.class
+com\ifpe\techifolio\service\UserDetailsServiceImpl.class
+com\ifpe\techifolio\controller\LoginController.class
 com\ifpe\techifolio\repository\AlunoRepository.class
 com\ifpe\techifolio\controller\HomeController.class
 com\ifpe\techifolio\dto\ErrorResponse.class
@@ -6,14 +14,6 @@ com\ifpe\techifolio\repository\EmpresarioRepository.class
 com\ifpe\techifolio\entities\Aluno.class
 com\ifpe\techifolio\config\SecurityConfig.class
 com\ifpe\techifolio\controller\EmpresarioController.class
-com\ifpe\techifolio\TechifolioApplication.class
 com\ifpe\techifolio\config\PasswordEncoderConfig.class
-com\ifpe\techifolio\entities\Professor.class
-com\ifpe\techifolio\repository\ProfessorRepository.class
 com\ifpe\techifolio\controller\ProfessorController.class
-com\ifpe\techifolio\service\CustomOAuth2UserService.class
-com\ifpe\techifolio\controller\ProtectedController.class
-com\ifpe\techifolio\service\PasswordGenerator.class
-com\ifpe\techifolio\service\UserDetailsServiceImpl.class
-com\ifpe\techifolio\controller\LoginController.class
 com\ifpe\techifolio\entities\Empresario.class

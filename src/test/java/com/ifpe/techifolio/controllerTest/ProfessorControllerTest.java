@@ -21,6 +21,7 @@ import com.ifpe.techifolio.entities.Professor;
 import com.ifpe.techifolio.repository.ProfessorRepository;
 
 import org.springframework.http.MediaType;
+import java.util.Optional;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,7 +70,7 @@ class ProfessorControllerTest {
     @Test
     void testCreateProfessorErrorDuplicateEmailTC014() throws Exception {
         //Define o comportamento do mock: quando o método findByEmail for chamado, retorne o objeto professor
-        when(professorRepository.findByEmail("joao@mail.com")).thenReturn(professor);
+        when(professorRepository.findByEmail("joao@mail.com")).thenReturn(Optional.of(professor));
 
         mockMvc.perform(post("/professores")
                 .contentType(MediaType.APPLICATION_JSON)

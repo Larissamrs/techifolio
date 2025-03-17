@@ -38,14 +38,14 @@
 <body>
     <h1>Login Page</h1>
     <div class="form-container">
-        <form method="post" action="/alunos/login">
+        <form id="loginForm" method="POST" action="/alunos/login">
             <div>
                 <label for="username">E-mail:</label>
-                <input type="text" id="username" name="username">
+                <input type="text" id="username" name="email">
             </div>
             <div>
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password">
+                <input type="password" id="password" name="senha">
             </div>
             <div>
                 <button type="submit">Login</button>
@@ -63,5 +63,6 @@
             </a>
         </div>
     </div>
+    <script src="/scripts/login.js"></script>
 </body>
 </html>

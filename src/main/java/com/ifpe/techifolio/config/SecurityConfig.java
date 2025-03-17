@@ -27,15 +27,18 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorizeHttpRequests ->
                 authorizeHttpRequests
-                    .requestMatchers("/", "/login", "/login**", "/error**", "/oauth2/**", "/logout", "/alunos/login", "/alunos/recuperar-senha", "/alunos").permitAll()
+                    .requestMatchers("/", "/login", "/login**", "/error**", "/oauth2/**", "/logout", 
+                                     "/alunos/login", "/empresarios/login", "/professores/login", 
+                                     "/alunos/recuperar-senha", "/empresarios/recuperar-senha", 
+                                     "/professores/recuperar-senha", "/alunos", "/empresarios", 
+                                     "/professores", "/scripts/**", "/css/**").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(formLogin ->
                 formLogin
                     .loginPage("/login")
-                    .loginProcessingUrl("/alunos/login")
+                    .loginProcessingUrl("/perform_login")
                     .defaultSuccessUrl("/home", true)
-                    .failureUrl("/login?error=true")
                     .permitAll()
             )
             .oauth2Login(oauth2Login ->
@@ -54,7 +57,7 @@ public class SecurityConfig {
                     .permitAll()
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/alunos/login", "/alunos/recuperar-senha", "/logout")
+                .ignoringRequestMatchers("/alunos/login", "/empresarios/login", "/professores/login", "/alunos/recuperar-senha", "/empresarios/recuperar-senha", "/professores/recuperar-senha", "/logout")
             )
             .sessionManagement(sessionManagement ->
                 sessionManagement

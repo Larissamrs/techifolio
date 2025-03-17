@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 
 @ExtendWith(MockitoExtension.class)
 class EmpresarioControllerTest {
@@ -66,7 +68,7 @@ class EmpresarioControllerTest {
 
     @Test
     void testCreateEmpresarioErrorDuplicateEmailTC014() throws Exception {
-        when(empresarioRepository.findByEmail(empresario.getEmail())).thenReturn(empresario);
+        when(empresarioRepository.findByEmail(empresario.getEmail())).thenReturn(Optional.of(empresario));
 
         mockMvc.perform(post("/empresarios")
                 .contentType(MediaType.APPLICATION_JSON)
