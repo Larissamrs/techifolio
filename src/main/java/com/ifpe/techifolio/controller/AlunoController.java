@@ -95,7 +95,10 @@ public class AlunoController {
                     session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
                     
                     // Retorne os dados do usuário logado
-                    return ResponseEntity.ok(existingAluno);
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("nome", existingAluno.getNome());
+                    response.put("email", existingAluno.getEmail());
+                    return ResponseEntity.ok(response);
                 } catch (Exception e) {
                     return ResponseEntity.status(500).body(new ErrorResponse("Erro ao processar autenticação: " + e.getMessage(), null));
                 }

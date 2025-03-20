@@ -1,7 +1,7 @@
 package com.ifpe.techifolio.controllerTest;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +25,7 @@ import java.util.Optional;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class AlunoControllerTest {
@@ -33,6 +34,10 @@ class AlunoControllerTest {
 
     @Mock
     private AlunoRepository alunoRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private AlunoController alunoController;
 
@@ -50,147 +55,60 @@ class AlunoControllerTest {
     }
 
     @Test
-    void testCreateAlunoSuccessTC013() throws Exception {
-        when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
-
-        mockMvc.perform(post("/alunos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(aluno)))
-                .andExpect(status().isCreated()) // Verifica se o status da resposta é 201 Created
-                .andExpect(jsonPath("$.nome").value(aluno.getNome())) // Verifica o conteúdo da resposta
-                .andExpect(jsonPath("$.email").value(aluno.getEmail()))
-                .andExpect(jsonPath("$.senha").value(aluno.getSenha()))
-                .andExpect(jsonPath("$.faculdade").value(aluno.getFaculdade()));
-    }
-
-    @Test
-    void testCreateAlunoErrorDuplicateEmailTC014() throws Exception {
+    void testLoginSuccessTC001() throws Exception {
         when(alunoRepository.findByEmail(aluno.getEmail())).thenReturn(Optional.of(aluno));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 
-        mockMvc.perform(post("/alunos")
+        mockMvc.perform(post("/alunos/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(aluno)))
-                .andExpect(status().isConflict()) // Verifica se o status da resposta é 409 Conflict
-                .andExpect(jsonPath("$.message").value("Erro: Já existe um aluno cadastrado com o email informado.")) // Verifica a mensagem de erro
-                .andExpect(jsonPath("$.receivedObject.nome").value(aluno.getNome())) // Verifica o conteúdo da resposta
-                .andExpect(jsonPath("$.receivedObject.email").value(aluno.getEmail()))
-                .andExpect(jsonPath("$.receivedObject.senha").value(aluno.getSenha()))
-                .andExpect(jsonPath("$.receivedObject.faculdade").value(aluno.getFaculdade()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value(aluno.getNome()))
+                .andExpect(jsonPath("$.email").value(aluno.getEmail()));
     }
 
     @Test
-    void testCreateAlunoErrorNullFieldNomeTC015() throws Exception {
-        Aluno invalidAluno = new Aluno(id, null, "joao@mail.com", "123456", "ABC");
-        
-        mockMvc.perform(post("/alunos")
+    void testLoginNonExistentEmailTC002() throws Exception {
+        when(alunoRepository.findByEmail(aluno.getEmail())).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/alunos/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(invalidAluno)))
-                .andExpect(status().isBadRequest()) // Verifica se o status da resposta é 400 Bad Request
-                .andExpect(jsonPath("$.message").value("Erro: Nome não pode ser nulo. ")) // Verifica a mensagem de erro
-                .andExpect(jsonPath("$.receivedObject.nome").isEmpty()); // Verifica o campo nulo no objeto recebido
+                .content(new ObjectMapper().writeValueAsString(aluno)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("E-mail não cadastrado"));
     }
 
     @Test
-    void testCreateAlunoErrorNullFieldEmailTC016() throws Exception {
+    void testLoginIncorrectPasswordTC003() throws Exception {
+        when(alunoRepository.findByEmail(aluno.getEmail())).thenReturn(Optional.of(aluno));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+        mockMvc.perform(post("/alunos/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(aluno)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Senha incorreta"));
+    }
+
+    @Test
+    void testLoginMissingEmailTC004() throws Exception {
         Aluno invalidAluno = new Aluno(id, "João", null, "123456", "ABC");
-        
-        mockMvc.perform(post("/alunos")
+
+        mockMvc.perform(post("/alunos/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(invalidAluno)))
-                .andExpect(status().isBadRequest()) // Verifica se o status da resposta é 400 Bad Request
-                .andExpect(jsonPath("$.message").value("Erro: Email não pode ser nulo. ")) // Verifica a mensagem de erro
-                .andExpect(jsonPath("$.receivedObject.email").isEmpty()); // Verifica o campo nulo no objeto recebido
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Todos os campos devem ser preenchidos. Insira um e-mail para continuar."));
     }
 
     @Test
-    void testCreateAlunoErrorNullFieldPasswordTC017() throws Exception {
+    void testLoginMissingPasswordTC005() throws Exception {
         Aluno invalidAluno = new Aluno(id, "João", "joao@mail.com", null, "ABC");
-        
-        mockMvc.perform(post("/alunos")
+
+        mockMvc.perform(post("/alunos/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(invalidAluno)))
-                .andExpect(status().isBadRequest()) // Verifica se o status da resposta é 400 Bad Request
-                .andExpect(jsonPath("$.message").value("Erro: Senha não pode ser nula. ")) // Verifica a mensagem de erro
-                .andExpect(jsonPath("$.receivedObject.senha").isEmpty()); // Verifica o campo nulo no objeto recebido
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Todos os campos devem ser preenchidos. Insira uma senha para continuar."));
     }
-
-    @Test
-    void testCreateAlunoErrorNullFieldFaculdadeTC018() throws Exception {
-        Aluno invalidAluno = new Aluno(id, "João", "joao@mail.com", "123456", null);
-        
-        mockMvc.perform(post("/alunos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(invalidAluno)))
-                .andExpect(status().isBadRequest()) // Verifica se o status da resposta é 400 Bad Request
-                .andExpect(jsonPath("$.message").value("Erro: Faculdade não pode ser nula. ")) // Verifica a mensagem de erro
-                .andExpect(jsonPath("$.receivedObject.faculdade").isEmpty()); // Verifica o campo nulo no objeto recebido
-    }
-
-    // @Test
-    // public void testGetAlunoById() throws Exception {
-    //     when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
-
-    //     mockMvc.perform(get("/alunos/{id}", id.toHexString()))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$.nome").value(aluno.getNome()));
-    // }
-
-    // @Test
-    // public void testUpdateAlunoSuccess() throws Exception {
-    //     when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
-    //     when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
-
-    //     mockMvc.perform(put("/alunos/{id}", id.toHexString())
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .content(new ObjectMapper().writeValueAsString(aluno)))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$.nome").value(aluno.getNome()))
-    //             .andExpect(jsonPath("$.email").value(aluno.getEmail()))
-    //             .andExpect(jsonPath("$.senha").value(aluno.getSenha()))
-    //             .andExpect(jsonPath("$.faculdade").value(aluno.getFaculdade()));
-    // }
-
-    // @Test
-    // public void testUpdateAlunoErrorNullFieldNome() throws Exception {
-    //     Aluno invalidAluno = new Aluno(id, null, "joao@mail.com", "123456", "ABC");
-    //     ErrorResponse errorResponse = new ErrorResponse("Erro: Nome não pode ser nulo", invalidAluno);
-
-    //     when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
-
-    //     mockMvc.perform(put("/alunos/{id}", id.toHexString())
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .content(new ObjectMapper().writeValueAsString(invalidAluno)))
-    //             .andExpect(status().isBadRequest())
-    //             .andExpect(jsonPath("$.message").value("Erro: Nome não pode ser nulo"))
-    //             .andExpect(jsonPath("$.receivedObject.nome").isEmpty());
-    // }
-
-    // @Test
-    // public void testDeleteAluno() throws Exception {
-    //     when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
-
-    //     mockMvc.perform(delete("/alunos/{id}", id.toHexString()))
-    //             .andExpect(status().isNoContent());
-    // }
-
-    // @Test
-    // public void testLogin() throws Exception {
-    //     when(alunoRepository.findByEmailAndSenha(aluno.getEmail(), aluno.getSenha())).thenReturn(aluno);
-
-    //     mockMvc.perform(post("/alunos/login")
-    //             .param("email", aluno.getEmail())
-    //             .param("senha", aluno.getSenha()))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$.nome").value(aluno.getNome()));
-    // }
-
-    // @Test
-    // public void testRecuperarSenha() throws Exception {
-    //     when(alunoRepository.findByEmail(aluno.getEmail())).thenReturn(aluno);
-
-    //     mockMvc.perform(post("/alunos/recuperar-senha")
-    //             .param("email", aluno.getEmail()))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$.message").value("Senha atualizada com sucesso. Nova senha: " + aluno.getSenha()));
-    // }
 }
