@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class AlunoServiceTest {
@@ -51,6 +52,7 @@ public class AlunoServiceTest {
         existingAluno.setEmail("test@example.com");
         existingAluno.setSenha("encodedPassword");
         existingAluno.setNome("Test User");
+        existingAluno.setFaculdade("Test University");
     }
 
     @Test
