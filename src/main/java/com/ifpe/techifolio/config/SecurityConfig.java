@@ -30,8 +30,8 @@ public class SecurityConfig {
                     .requestMatchers("/", "/login", "/login**", "/error**", "/oauth2/**", "/logout", 
                                      "/alunos/login", "/empresarios/login", "/professores/login", 
                                      "/alunos/recuperar-senha", "/empresarios/recuperar-senha", 
-                                     "/professores/recuperar-senha", "/alunos", "/empresarios", 
-                                     "/professores", "/scripts/**", "/css/**").permitAll()
+                                     "/professores/recuperar-senha", "/empresarios", 
+                                     "/professores", "/scripts/**", "/css/**", "/alunos").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(formLogin ->
@@ -57,7 +57,7 @@ public class SecurityConfig {
                     .permitAll()
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/alunos/login", "/empresarios/login", "/professores/login", "/alunos/recuperar-senha", "/empresarios/recuperar-senha", "/professores/recuperar-senha", "/logout")
+                .ignoringRequestMatchers("/alunos", "/alunos/login", "/empresarios/login", "/professores/login", "/alunos/recuperar-senha", "/empresarios/recuperar-senha", "/professores/recuperar-senha", "/logout")
             )
             .sessionManagement(sessionManagement ->
                 sessionManagement

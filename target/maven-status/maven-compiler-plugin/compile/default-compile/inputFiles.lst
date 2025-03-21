@@ -1,21 +1,21 @@
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\config\PasswordEncoderConfig.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\config\SecurityConfig.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\controller\AlunoController.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\controller\EmpresarioController.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\controller\HomeController.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\controller\LoginController.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\controller\ProfessorController.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\controller\ProtectedController.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\dto\ErrorResponse.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\entities\Aluno.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\entities\Empresario.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\entities\Pessoa.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\entities\Professor.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\repository\AlunoRepository.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\repository\EmpresarioRepository.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\repository\ProfessorRepository.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\service\AlunoService.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\service\CustomOAuth2UserService.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\service\PasswordGenerator.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\service\UserDetailsServiceImpl.java
-C:\Users\a.marques.pereira\OneDrive - Avanade\Documents\Estudos IF\techifolio\src\main\java\com\ifpe\techifolio\TechifolioApplication.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\config\PasswordEncoderConfig.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\config\SecurityConfig.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\controller\AlunoController.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\controller\EmpresarioController.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\controller\HomeController.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\controller\LoginController.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\controller\ProfessorController.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\controller\ProtectedController.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\dto\ErrorResponse.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\entities\Aluno.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\entities\Empresario.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\entities\Pessoa.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\entities\Professor.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\repository\AlunoRepository.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\repository\EmpresarioRepository.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\repository\ProfessorRepository.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\service\AlunoService.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\service\CustomOAuth2UserService.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\service\PasswordGenerator.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\service\UserDetailsServiceImpl.java
+C:\Users\a.marques.pereira\Desktop\techifolio\src\main\java\com\ifpe\techifolio\TechifolioApplication.java

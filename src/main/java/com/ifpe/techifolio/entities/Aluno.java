@@ -31,16 +31,16 @@ public class Aluno extends Pessoa{
 
     public String getNullFieldMessageAluno() {
         String returnText = "";
-        if (this.getNome() == null) {
+        if (this.getNome() == null || this.getNome().isEmpty()) {
             returnText += "Nome não pode ser nulo. ";
         }
-        if (this.getEmail() == null) {
+        if (this.getEmail() == null || this.getEmail().isEmpty()) {
             returnText += "Email não pode ser nulo. ";
         }
-        if (this.getSenha() == null) {
+        if (this.getSenha() == null || this.getSenha().isEmpty()) {
             returnText += "Senha não pode ser nula. ";
         }
-        if (this.getFaculdade() == null) {
+        if (this.getFaculdade() == null || this.getFaculdade().isEmpty()) {
             returnText += "Faculdade não pode ser nula. ";
         }
         if (!returnText.isEmpty()) {

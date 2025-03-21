@@ -26,6 +26,28 @@ public class AlunoService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public Aluno createAluno(Aluno aluno) throws Exception {
+        if (aluno.getNome() == null || aluno.getNome().isEmpty()) {
+            throw new Exception("Erro: Nome não pode ser nulo ou vazio.");
+        }
+        if (aluno.getFaculdade() == null || aluno.getFaculdade().isEmpty()) {
+            throw new Exception("Erro: Faculdade não pode ser nula ou vazia.");
+        }
+        if (aluno.getEmail() == null || aluno.getEmail().isEmpty()) {
+            throw new Exception("Erro: Email não pode ser nulo ou vazio.");
+        }
+        if (aluno.getSenha() == null || aluno.getSenha().isEmpty()) {
+            throw new Exception("Erro: Senha não pode ser nula ou vazia.");
+        }
+
+        Optional<Aluno> verificaEmail = repository.findByEmail(aluno.getEmail());
+        if (verificaEmail.isPresent()) {
+            throw new Exception("Erro: Já existe um aluno cadastrado com o email informado.");
+        }
+        aluno.setSenha(passwordEncoder.encode(aluno.getSenha())); // Criptografar a senha antes de salvar
+        return repository.save(aluno);
+    }
+
     public Map<String, Object> login(Aluno aluno, HttpServletRequest request) throws Exception {
         if (aluno.getEmail() == null || aluno.getEmail().isEmpty()) {
             throw new Exception("E-mail não informado");

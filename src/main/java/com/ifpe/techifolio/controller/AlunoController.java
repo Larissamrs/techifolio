@@ -33,18 +33,12 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<Object> createAluno(@RequestBody Aluno aluno) {
-        String nullFieldMessage = aluno.getNullFieldMessageAluno();
-        if (nullFieldMessage != null) {
-            ErrorResponse errorResponse = new ErrorResponse("Erro: " + nullFieldMessage, aluno);
-            return ResponseEntity.badRequest().body(errorResponse);
+        try {
+            Aluno savedAluno = alunoService.createAluno(aluno);
+            return ResponseEntity.status(201).body(savedAluno);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(), aluno));
         }
-        Optional<Aluno> verificaEmail = repository.findByEmail(aluno.getEmail());
-        if (verificaEmail.isPresent()) {
-            return ResponseEntity.status(409).body(new ErrorResponse("Erro: Já existe um aluno cadastrado com o email informado.", aluno));
-        }
-        aluno.setSenha(passwordEncoder.encode(aluno.getSenha())); // Criptografar a senha antes de salvar
-        Aluno savedAluno = repository.save(aluno);
-        return ResponseEntity.status(201).body(savedAluno);
     }
 
     @PostMapping("/login")
