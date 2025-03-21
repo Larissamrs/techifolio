@@ -2,11 +2,10 @@ package com.ifpe.techifolio.controller;
 
 import com.ifpe.techifolio.entities.Aluno;
 import com.ifpe.techifolio.repository.AlunoRepository;
+import com.ifpe.techifolio.service.AlunoService;
 import com.ifpe.techifolio.service.PasswordGenerator;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 import com.ifpe.techifolio.dto.ErrorResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import java.util.Collections;
-import org.springframework.security.core.userdetails.User;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -34,6 +27,9 @@ public class AlunoController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AlunoService alunoService;
 
     @PostMapping
     public ResponseEntity<Object> createAluno(@RequestBody Aluno aluno) {
@@ -53,60 +49,17 @@ public class AlunoController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Aluno aluno, HttpServletRequest request) {
-        // Verifique campos obrigatórios
-        if (aluno.getEmail() == null || aluno.getEmail().isEmpty()) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Todos os campos devem ser preenchidos. Insira um e-mail para continuar.", aluno));
-        }
-        if (aluno.getSenha() == null || aluno.getSenha().isEmpty()) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Todos os campos devem ser preenchidos. Insira uma senha para continuar.", aluno));
-        }
-
-        // Buscar usuário
-        Optional<Aluno> optionalAluno = repository.findByEmail(aluno.getEmail());
-        if (optionalAluno.isPresent()) {
-            Aluno existingAluno = optionalAluno.get();
-            if (passwordEncoder.matches(aluno.getSenha(), existingAluno.getSenha())) {
-                try {
-                    // Crie um UserDetails personalizado com as informações do aluno
-                    User userDetails = new User(
-                        existingAluno.getEmail(),
-                        existingAluno.getSenha(),
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
-                    );
-                    
-                    // Use o UserDetails como principal na autenticação
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, 
-                        null, 
-                        userDetails.getAuthorities()
-                    );
-                    
-                    // Adicione as informações adicionais do aluno
-                    Map<String, Object> details = new HashMap<>();
-                    details.put("nome", existingAluno.getNome());
-                    details.put("id", existingAluno.getId());
-                    authToken.setDetails(details);
-                    
-                    // Configure a autenticação
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                    
-                    // Crie a sessão
-                    HttpSession session = request.getSession(true);
-                    session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-                    
-                    // Retorne os dados do usuário logado
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("nome", existingAluno.getNome());
-                    response.put("email", existingAluno.getEmail());
-                    return ResponseEntity.ok(response);
-                } catch (Exception e) {
-                    return ResponseEntity.status(500).body(new ErrorResponse("Erro ao processar autenticação: " + e.getMessage(), null));
-                }
+        try {
+            Map<String, Object> response = alunoService.login(aluno, request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            if (e.getMessage().equals("Senha incorreta")) {
+                return ResponseEntity.status(401).body(new ErrorResponse(e.getMessage(), aluno));
+            } else if (e.getMessage().equals("E-mail não cadastrado")) {
+                return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage(), aluno));
             } else {
-                return ResponseEntity.status(401).body(new ErrorResponse("Senha incorreta", aluno));
+                return ResponseEntity.status(500).body(new ErrorResponse(e.getMessage(), null));
             }
-        } else {
-            return ResponseEntity.status(404).body(new ErrorResponse("E-mail não cadastrado", aluno));
         }
     }
 
