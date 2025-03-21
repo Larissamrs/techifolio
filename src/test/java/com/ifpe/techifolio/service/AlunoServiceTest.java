@@ -109,4 +109,84 @@ public class AlunoServiceTest {
 
         assertEquals("Senha não informada", exception.getMessage());
     }
+
+    @Test
+    public void testCreateAlunoSuccess() throws Exception {
+        Aluno newAluno = new Aluno();
+        newAluno.setNome("Test User");
+        newAluno.setFaculdade("Test University");
+        newAluno.setEmail("test@example.com");
+        newAluno.setSenha("password");
+
+        when(repository.findByEmail(newAluno.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(newAluno.getSenha())).thenReturn("encodedPassword");
+        when(repository.save(any(Aluno.class))).thenReturn(newAluno);
+
+        Aluno createdAluno = alunoService.createAluno(newAluno);
+
+        assertNotNull(createdAluno);
+        assertEquals("Test User", createdAluno.getNome());
+        assertEquals("Test University", createdAluno.getFaculdade());
+        assertEquals("test@example.com", createdAluno.getEmail());
+        assertEquals("encodedPassword", createdAluno.getSenha());
+    }
+
+    @Test
+    public void testCreateAlunoEmailAlreadyExists() {
+        Aluno newAluno = new Aluno();
+        newAluno.setNome("Test User");
+        newAluno.setFaculdade("Test University");
+        newAluno.setEmail("test@example.com");
+        newAluno.setSenha("password");
+
+        when(repository.findByEmail(newAluno.getEmail())).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.createAluno(newAluno);
+        });
+
+        assertEquals("Erro: Já existe um aluno cadastrado com o email informado.", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateAlunoMissingNome() {
+        Aluno newAluno = new Aluno();
+        newAluno.setFaculdade("Test University");
+        newAluno.setEmail("test@example.com");
+        newAluno.setSenha("password");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.createAluno(newAluno);
+        });
+
+        assertEquals("Erro: Nome não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateAlunoMissingEmail() {
+        Aluno newAluno = new Aluno();
+        newAluno.setNome("Test User");
+        newAluno.setFaculdade("Test University");
+        newAluno.setSenha("password");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.createAluno(newAluno);
+        });
+
+        assertEquals("Erro: Email não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateAlunoMissingSenha() {
+        Aluno newAluno = new Aluno();
+        newAluno.setNome("Test User");
+        newAluno.setFaculdade("Test University");
+        newAluno.setEmail("test@example.com");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.createAluno(newAluno);
+        });
+
+        assertEquals("Erro: Senha não pode ser nula ou vazia.", exception.getMessage());
+    }
 }
