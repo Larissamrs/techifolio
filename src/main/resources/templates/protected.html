@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Protected Page</title>
+</head>
+<body>
+    <h1>Protected Page</h1>
+    <p>Authenticated user: <span th:text="${username}">Unknown</span></p>
+    <form action="/logout" method="post">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+</body>
+</html>
