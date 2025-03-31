@@ -57,9 +57,6 @@ public class AlunoService {
     }
 
     public Aluno updateAluno(ObjectId id, Aluno alunoDetails) throws Exception {
-        if (id == null) {
-            throw new Exception("Erro: ID do aluno não pode ser nulo.");
-        }
         Optional<Aluno> optionalAluno = repository.findById(id);
     
         if (!optionalAluno.isPresent()) {

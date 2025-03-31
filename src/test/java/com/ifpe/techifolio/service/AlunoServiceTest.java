@@ -423,18 +423,6 @@ public class AlunoServiceTest {
     }
 
     @Test
-    public void testUpdateAlunoIdNulo() {
-        Aluno alunoDetails = new Aluno();
-        alunoDetails.setNome("Novo Nome");
-
-        Exception exception = assertThrows(Exception.class, () -> {
-            alunoService.updateAluno(null, alunoDetails);
-        });
-
-        assertEquals("Erro: ID do aluno não pode ser nulo.", exception.getMessage());
-    }
-
-    @Test
     public void testRecuperarSenhaEmailFormatoInvalido() {
         Aluno aluno = new Aluno();
         aluno.setEmail("emailinvalido");
