@@ -92,6 +92,10 @@ public class AlunoService {
             if (!alunoDetails.getEmail().matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
                 throw new Exception("Erro: Formato de email inválido.");
             }
+            Optional<Aluno> alunoComMesmoEmail = repository.findByEmail(alunoDetails.getEmail());
+            if (alunoComMesmoEmail.isPresent() && !alunoComMesmoEmail.get().getId().equals(existingAluno.getId())) {
+                throw new Exception("Erro: Já existe um aluno cadastrado com o email informado.");
+            }
             existingAluno.setEmail(alunoDetails.getEmail());
         }
     

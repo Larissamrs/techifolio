@@ -195,6 +195,8 @@ public class AlunoServiceTest {
         assertEquals("Erro: Senha não pode ser nula ou vazia.", exception.getMessage());
     }
 
+    // Testes inseridos por Larissa Maria
+
     @Test
     public void testUpdateAlunoAlterarNomeComSucesso() throws Exception {
         ObjectId id = new ObjectId();
@@ -226,11 +228,39 @@ public class AlunoServiceTest {
     }
 
     @Test
-    public void testUpdateAlunoCamposObrigatoriosVazios() {
+    public void testUpdateAlunoNomeVazio() {
         ObjectId id = new ObjectId();
         Aluno alunoDetails = new Aluno();
         alunoDetails.setNome("");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Nome não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoSenhaVazia() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
         alunoDetails.setSenha("");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Senha não pode ser nula ou vazia.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoEmailVazio() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
         alunoDetails.setEmail("");
 
         when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
@@ -239,7 +269,7 @@ public class AlunoServiceTest {
             alunoService.updateAluno(id, alunoDetails);
         });
 
-        assertEquals("Erro: Nome, senha e email não podem ser nulos ou vazios.", exception.getMessage());
+        assertEquals("Erro: Email não pode ser nulo ou vazio.", exception.getMessage());
     }
 
     @Test
@@ -287,6 +317,25 @@ public class AlunoServiceTest {
         assertEquals("Erro: Email não pode ser nulo ou vazio.", exception.getMessage());
     }
 
+    @Test
+    public void testUpdateAlunoEmailDuplicado() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setEmail("duplicado@example.com");
+
+        Aluno outroAluno = new Aluno();
+        outroAluno.setId(new ObjectId());
+        outroAluno.setEmail("duplicado@example.com");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+        when(repository.findByEmail(alunoDetails.getEmail())).thenReturn(Optional.of(outroAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Já existe um aluno cadastrado com o email informado.", exception.getMessage());
+    }
 
     @Test
     public void testUpdateAlunoSalvarSemAlterar() throws Exception {
