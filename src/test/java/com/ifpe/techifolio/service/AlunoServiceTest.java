@@ -2,6 +2,8 @@ package com.ifpe.techifolio.service;
 
 import com.ifpe.techifolio.entities.Aluno;
 import com.ifpe.techifolio.repository.AlunoRepository;
+
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class AlunoServiceTest {
@@ -190,5 +193,256 @@ public class AlunoServiceTest {
         });
 
         assertEquals("Erro: Senha não pode ser nula ou vazia.", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateAlunoSemFaculdade() {
+        Aluno newAluno = new Aluno();
+        newAluno.setNome("Test User");
+        newAluno.setEmail("test@example.com");
+        newAluno.setSenha("password");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.createAluno(newAluno);
+        });
+
+        assertEquals("Erro: Faculdade não pode ser nula ou vazia.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoAlterarNomeComSucesso() throws Exception {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setNome("Novo Nome");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+        when(repository.save(any(Aluno.class))).thenReturn(existingAluno);
+
+        Aluno updatedAluno = alunoService.updateAluno(id, alunoDetails);
+
+        assertNotNull(updatedAluno);
+        assertEquals("Novo Nome", updatedAluno.getNome());
+    }
+
+    @Test
+    public void testUpdateAlunoSenhaIncorreta() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setSenha("senhaIncorreta");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Senha incorreta.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoNomeVazio() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setNome("");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Nome não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoSenhaVazia() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setSenha("");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Senha não pode ser nula ou vazia.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoEmailVazio() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setEmail("");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Email não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoNomeComCaracteresEspeciais() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setNome("Nome@123!");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Nome contém caracteres inválidos.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoEmailFormatoInvalido() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setEmail("emailinvalido");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Formato de email inválido.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoEmailEmBranco() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setEmail(""); 
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Email não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoEmailDuplicado() {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setEmail("duplicado@example.com");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+        Aluno duplicateAluno = new Aluno();
+        duplicateAluno.setId(new ObjectId()); // Set a mock ID for the duplicate Aluno
+        when(repository.findByEmail(alunoDetails.getEmail())).thenReturn(Optional.of(duplicateAluno));
+        duplicateAluno.setId(new ObjectId()); // Set a mock ID for the duplicate Aluno
+        when(repository.findByEmail(alunoDetails.getEmail())).thenReturn(Optional.of(duplicateAluno));
+        duplicateAluno.setId(new ObjectId()); // Set a mock ID for the duplicate Aluno
+        when(repository.findByEmail(alunoDetails.getEmail())).thenReturn(Optional.of(duplicateAluno));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(id, alunoDetails);
+        });
+
+        assertEquals("Erro: Já existe um aluno cadastrado com o email informado.", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateAlunoSalvarSemAlterar() throws Exception {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno(); 
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+        when(repository.save(any(Aluno.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Aluno updatedAluno = alunoService.updateAluno(id, alunoDetails);
+
+        assertNotNull(updatedAluno);
+        assertEquals(existingAluno.getNome(), updatedAluno.getNome());
+        assertEquals(existingAluno.getEmail(), updatedAluno.getEmail());
+        assertEquals(existingAluno.getFaculdade(), updatedAluno.getFaculdade());
+        assertEquals(existingAluno.getSenha(), updatedAluno.getSenha());
+    }
+
+    @Test
+    public void testUpdateAlunoAlterarEmail() throws Exception {
+        ObjectId id = new ObjectId();
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setEmail("novoemail@example.com");
+
+        when(repository.findById(id)).thenReturn(Optional.of(existingAluno));
+        when(repository.findByEmail(alunoDetails.getEmail())).thenReturn(Optional.empty());
+        when(repository.save(any(Aluno.class))).thenReturn(existingAluno);
+
+        Aluno updatedAluno = alunoService.updateAluno(id, alunoDetails);
+
+        assertNotNull(updatedAluno);
+        assertEquals("novoemail@example.com", updatedAluno.getEmail());
+    }
+
+    @Test
+    public void testRecuperarSenhaFormularioNaoPreenchido() {
+        Aluno aluno = new Aluno();
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.recuperarSenha(aluno);
+        });
+
+        assertEquals("Erro: Email não pode ser nulo ou vazio.", exception.getMessage());
+    }
+
+    @Test
+    public void testRecuperarSenhaEmailNaoCadastrado() {
+        Aluno aluno = new Aluno();
+        aluno.setEmail("naocadastrado@example.com");
+
+        when(repository.findByEmail(aluno.getEmail())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.recuperarSenha(aluno);
+        });
+
+        assertEquals("Erro: Aluno não encontrado com o email informado.", exception.getMessage());
+    }
+
+    @Test
+    public void testRecuperarSenhaSucesso() throws Exception {
+        Aluno aluno = new Aluno();
+        aluno.setEmail("test@example.com");
+
+        when(repository.findByEmail(aluno.getEmail())).thenReturn(Optional.of(existingAluno));
+        when(passwordEncoder.encode(anyString())).thenReturn("novaSenhaCodificada");
+
+        alunoService.recuperarSenha(aluno);
+
+        verify(repository).save(existingAluno);
+    }
+
+    @Test
+    public void testUpdateAlunoIdNulo() {
+        Aluno alunoDetails = new Aluno();
+        alunoDetails.setNome("Novo Nome");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.updateAluno(null, alunoDetails);
+        });
+
+        assertEquals("Erro: ID do aluno não pode ser nulo.", exception.getMessage());
+    }
+
+    @Test
+    public void testRecuperarSenhaEmailFormatoInvalido() {
+        Aluno aluno = new Aluno();
+        aluno.setEmail("emailinvalido");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            alunoService.recuperarSenha(aluno);
+        });
+
+        assertEquals("Erro: Formato de email inválido.", exception.getMessage());
     }
 }
